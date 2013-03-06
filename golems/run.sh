@@ -35,7 +35,8 @@ sed -i 's/precise/'$sys'/g' ~/repo/fcl/CMakeLists.txt
 sed -i 's/1.46/'$boostv'/g' ~/repo/fcl/CMakeLists.txt 
 sed -i 's/precise/'$sys'/g' ~/repo/dart/CMakeLists.txt 
 sed -i 's/1.46/'$boostv'/g' ~/repo/dart/CMakeLists.txt 
-sed -i 's/precise/'$sys'/g' ~/repo/grip/CMakeLists.txt 
+sed -i 's/precise/'$sys'/g' ~/repo/grip/CMakeLists.txt
+sed -i 's/precise/'$sys'/g' ~/repo/grip-samples/CMakeLists.txt
 
 cd ~/repo/libccd
 cmake .
