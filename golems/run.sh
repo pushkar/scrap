@@ -3,6 +3,16 @@
 sys=${1}
 boostv=${2}
 
+usage()
+{
+    echo "usage: ./run.sh [<precise/quantal> <boostv>]" 
+    echo "Example: ./run.sh precise 1.46"
+    echo ""
+    exit 1
+}
+
+[ "$#" -lt 2 ] && usage
+
 echo 'Building for '$sys' with Boost version '$boostv
 
 sudo apt-get install libboost$boostv-all-dev
@@ -13,6 +23,7 @@ git clone git://github.com/golems/libccd.git
 git clone git://github.com/golems/fcl.git
 git clone git://github.com/golems/dart.git
 git clone git://github.com/golems/grip.git
+git clone git://github.com/golems/grip-samples.git
 
 sed -i 's/precise/'$sys'/g' ~/repo/libccd/CMakeLists.txt 
 sed -i 's/precise/'$sys'/g' ~/repo/fcl/CMakeLists.txt 
@@ -45,6 +56,13 @@ sudo dpkg -i *.deb
 cp *.deb ~/
 
 cd ~/repo/grip
+cmake .
+make
+cpack -G DEB
+sudo dpkg -i *.deb
+cp *.deb ~/
+
+cd ~/repo/grip-samples
 cmake .
 make
 cpack -G DEB
