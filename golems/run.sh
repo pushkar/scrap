@@ -25,6 +25,11 @@ git clone git://github.com/golems/dart.git
 git clone git://github.com/golems/grip.git
 git clone git://github.com/golems/grip-samples.git
 
+cd ~/repo/fcl
+git pull origin
+git checkout debian_gen
+cd ~
+
 sed -i 's/precise/'$sys'/g' ~/repo/libccd/CMakeLists.txt 
 sed -i 's/precise/'$sys'/g' ~/repo/fcl/CMakeLists.txt 
 sed -i 's/1.46/'$boostv'/g' ~/repo/fcl/CMakeLists.txt 
@@ -40,8 +45,6 @@ sudo dpkg -i *.deb
 cp *.deb ~/
 
 cd ~/repo/fcl
-git pull origin
-git checkout debian_gen
 cmake .
 make
 cpack -G DEB
