@@ -1,53 +1,55 @@
 #!/bin/sh
 
-sys=${1}
-boostv=${2}
+ans="1"
+sys=precise
+boostv=1.46
 
-usage()
+process() 
 {
-    echo "usage: ./run2.sh [<precise/quantal> <boostv>]" 
-    echo "Example: ./run2.sh precise 1.46"
-    echo ""
-    exit 1
+  cd $1
+  cmake .
+  make
+  cpack -G DEB
+  sudo dpkg -i *.deb
+  cp *.deb ../../
+  cd ..
 }
 
-[ "$#" -lt 2 ] && usage
+echo "Script to create the latest debians for dart, grip and grip-samples" 
+echo "  1. System = precise, Boost Version = 1.46 (default)"
+echo "  2. System = quantal, Boost Version = 1.49"
+read -p "Select option [1/2]: " option
+option=${option:-1}
 
-echo 'Building for '$sys' with Boost version '$boostv
+if [ "$option" -eq 2 ] 
+then
+  sys=quantal
+  boostv=1.49
+else
+  sys=precise
+  boostv=1.46
+fi
 
-sudo apt-get install libboost$boostv-all-dev
+echo 'Generating debians for '$sys' with Boost version '$boostv''
 
-mkdir repo
-cd repo
-git clone git://github.com/golems/dart.git
-git clone git://github.com/golems/grip.git
-git clone git://github.com/golems/grip-samples.git
+# sudo apt-get install libboost$boostv-all-dev
 
-sed -i 's/precise/'$sys'/g' ~/repo/dart/CMakeLists.txt 
-sed -i 's/1.46/'$boostv'/g' ~/repo/dart/CMakeLists.txt 
-sed -i 's/precise/'$sys'/g' ~/repo/grip/CMakeLists.txt 
-sed -i 's/precise/'$sys'/g' ~/repo/grip-samples/CMakeLists.txt
+mkdir tmp
+cd tmp
 
-cd ~/repo/dart
-cmake .
-make
-cpack -G DEB
-sudo dpkg -i *.deb
-cp *.deb ~/
+git clone git://github.com/dartsim/dart.git
+git clone git://github.com/dartsim/grip.git
+git clone git://github.com/dartsim/grip-samples.git
 
-cd ~/repo/grip
-cmake .
-make
-cpack -G DEB
-sudo dpkg -i *.deb
-cp *.deb ~/
+sed -i 's/precise/'$sys'/g' dart/CMakeLists.txt 
+sed -i 's/1.46/'$boostv'/g' dart/CMakeLists.txt 
+sed -i 's/precise/'$sys'/g' grip/CMakeLists.txt 
+sed -i 's/precise/'$sys'/g' grip-samples/CMakeLists.txt
 
-cd ~/repo/grip-samples
-cmake .
-make
-cpack -G DEB
-sudo dpkg -i *.deb
-cp *.deb ~/
+process dart
+process grip
+process grip-samples
 
-cd ~
+cd ..
+
 scp *.deb pushkar7@golems.org:~/dart.golems.org/downloads/linux/$sys/

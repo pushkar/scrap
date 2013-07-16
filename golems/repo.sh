@@ -40,7 +40,8 @@ function check_repo {
   fi
 }
 
-function show_help {
+function usage {
+  echo "Script for maintaining dartsim apt repo"
   echo "$0 OPTIONS"
   echo "  -r repo"
   echo "  -l list debians in repo"
@@ -50,11 +51,12 @@ function show_help {
   echo "  -U upload repo to webserver"
   echo "  -D download repo from webserver"
   echo "  -h show this help"
+  echo ""
   exit 0
 }
 
 if [ $# -eq 0 ] ; then
-    show_help
+    usage
 fi
 
 while getopts ":r:a:d:L:lUDh" opt; do
@@ -66,7 +68,7 @@ while getopts ":r:a:d:L:lUDh" opt; do
     d) delete_flag=true; delete_arg=$OPTARG ;;
     U) upload_flag=true ;;
     D) download_flag=true ;;
-    h) show_help ;;
+    h) usage ;;
     \?) echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
     :)  echo "Option -$OPTARG requires an argument." >&2; exit 1 ;;
   esac

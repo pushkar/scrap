@@ -3,6 +3,9 @@
 sys=${1}
 boostv=${2}
 
+echo "This script is deprecated. Will not run."
+exit 1
+
 usage()
 {
     echo "usage: ./run.sh [<precise/quantal> <boostv>]" 
